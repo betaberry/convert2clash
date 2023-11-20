@@ -339,17 +339,27 @@ def save_config(path, data):
 # 程序入口
 if __name__ == '__main__':
     # 订阅地址 多个地址用;隔开
-    sub_url = input('请输入订阅地址(多个地址用;隔开):')
-    # 输出路径
-    output_path = './output.yaml'
-    # 规则策略
-    config_url = 'https://cdn.jsdelivr.net/gh/celetor/convert2clash@main/config.yaml'
-    config_path = './config.yaml'
-
+    # sub_url = input('请输入订阅地址(多个地址用;隔开):')
+    sub_url = ""
     if sub_url is None or sub_url == '':
         sys.exit()
     node_list = get_proxies(sub_url)
+    
+    
+    # 输出路径
+    output_path = './output.yaml'
+    
+    # 规则策略
+    # 网上的
+    config_url = 'https://cdn.jsdelivr.net/gh/celetor/convert2clash@main/config.yaml'
+    # 网上没有，用本地的
+    config_path = './config.yaml'
+
+    # 网上下载不到，就用本地的
     default_config = get_default_config(config_url, config_path)
+    
+    
     final_config = add_proxies_to_model(node_list, default_config)
+    
     save_config(output_path, final_config)
     print(f'文件已导出至 {config_path}')
