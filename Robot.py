@@ -1,5 +1,3 @@
-# 说明 : 本脚本提供解析v2ray/ss/ssr/clashR/clashX订阅链接为Clash配置文件,仅供学习交流使用.
-# https://github.com/Celeter/convert2clash
 import base64
 import datetime
 import json
@@ -237,7 +235,15 @@ def get_proxies(urls):
     # 请求订阅地址
     for url in url_list:
         # 这里拿到的是一串乱码，需要进行解码
-        response = requests.get(url, headers=headers, timeout=9000).text
+        response = ''
+        try:
+            response = requests.get(url, headers=headers, timeout=9000).text
+        except Exception as e:
+            log('根据订阅地址获取base64失败:{}'.format(e))
+            log('开始使用来自本地base64.txt的base64')
+            f = open('./base64.txt')
+            response = f.readline()
+            f.close()
         try:
             raw = base64.b64decode(response)
         # 有可能直接拿到了没加密的yaml文件
@@ -246,17 +252,17 @@ def get_proxies(urls):
             log('代理节点提取中...')
             yml = yaml.load(response, Loader=yaml.FullLoader)
             nodes_list = []
-            tmp_list = []
+            tmp_node_list = []
             # clash新字段
             if yml.get('proxies'):
-                tmp_list = yml.get('proxies')
+                tmp_node_list = yml.get('proxies')
             # clash旧字段
             elif yml.get('Proxy'):
-                tmp_list = yml.get('Proxy')
+                tmp_node_list = yml.get('Proxy')
             else:
                 log('代理节点提取失败')
                 continue
-            for node in tmp_list:
+            for node in tmp_node_list:
                 node['name'] = node['name'].strip() if node.get('name') else None
                 # 对clashR的支持
                 if node.get('protocolparam'):
@@ -268,9 +274,9 @@ def get_proxies(urls):
                 node['udp'] = True
                 nodes_list.append(node)
 
-            node_names = [node.get('name') for node in nodes_list]
-
             proxy_list['proxy_list'].extend(nodes_list)
+
+            node_names = [node.get('name') for node in nodes_list]
             proxy_list['proxy_names'].extend(node_names)
             continue
 
@@ -302,10 +308,6 @@ def get_proxies(urls):
     return proxy_list
 
 
-def parse_clash_node():
-    pass
-
-
 # 获取本地规则策略的配置文件
 def load_local_config(path):
     try:
@@ -314,19 +316,20 @@ def load_local_config(path):
         f.close()
         return local_config
     except FileNotFoundError:
-        log('配置文件加载失败')
+        log('本地规则配置文件加载失败')
         sys.exit()
 
 
 # 获取规则策略的配置文件
 def get_default_config(url, path):
+    if url is None or url == '':
+        return load_local_config(path)
     try:
         raw = requests.get(url, timeout=5000).content.decode('utf-8')
         template_config = yaml.load(raw, Loader=yaml.FullLoader)
     except requests.exceptions.RequestException:
-        log('网络获取规则配置失败,加载本地配置文件')
+        log('网络获取规则配置失败,加载本地配置文件...')
         template_config = load_local_config(path)
-    log('已获取规则配置文件')
     return template_config
 
 
@@ -357,24 +360,25 @@ if __name__ == '__main__':
     # sub_url = input('请输入订阅地址(多个地址用;隔开):')
     f = open("sub_url.txt")
     sub_url = f.readline()
-    print(sub_url)
+    f.close()
     if sub_url is None or sub_url == '':
         sys.exit()
-    node_list = get_proxies(sub_url)
 
-    # 输出路径
-    output_path = './output.yaml'
+    # 获取代理节点
+    proxy_node_list = get_proxies(sub_url)
+
+    # 最终合并后的配置文件
+    output_path = './config.yaml'
 
     # 规则策略
-    # 网上的
-    config_url = 'https://cdn.jsdelivr.net/gh/celetor/convert2clash@main/config.yaml'
     # 网上没有，用本地的
-    config_path = './config.yaml'
+    rule_path = 'rule.yaml'
 
     # 网上下载不到，就用本地的
-    default_config = get_default_config(config_url, config_path)
+    default_config = get_default_config(None, rule_path)
 
-    final_config = add_proxies_to_model(node_list, default_config)
+    # 合并
+    final_config = add_proxies_to_model(proxy_node_list, default_config)
 
     save_config(output_path, final_config)
-    print(f'文件已导出至 {config_path}')
+    print(f'文件已导出至 {output_path}')
