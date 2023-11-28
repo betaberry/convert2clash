@@ -1,8 +1,14 @@
 # 说明 : 本脚本提供解析v2ray/ss/ssr/clashR/clashX订阅链接为Clash配置文件,仅供学习交流使用.
 # https://github.com/Celeter/convert2clash
-import os, re, sys, json, base64, datetime
-import requests, yaml
+import base64
+import datetime
+import json
+import re
+import sys
 import urllib.parse
+
+import requests
+import yaml
 
 
 def log(msg):
@@ -144,7 +150,8 @@ def v2ray_to_clash(arr):
         for key in list(obj.keys()):
             if obj.get(key) is None:
                 del obj[key]
-        if obj.get('alterId') is not None and not obj['name'].startswith('剩余流量') and not obj['name'].startswith('过期时间'):
+        if obj.get('alterId') is not None and not obj['name'].startswith('剩余流量') and not obj['name'].startswith(
+                '过期时间'):
             proxies['proxy_list'].append(obj)
             proxies['proxy_names'].append(obj['name'])
     log('可用v2ray节点{}个'.format(len(proxies['proxy_names'])))
@@ -215,11 +222,13 @@ def ssr_to_clash(arr):
     return proxies
 
 
+###########################################################################
+
 # 获取订阅地址数据:
 def get_proxies(urls):
     url_list = urls.split(';')
     headers = {
-        'User-Agent': 'Clash For Python'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
     }
     proxy_list = {
         'proxy_list': [],
@@ -227,13 +236,14 @@ def get_proxies(urls):
     }
     # 请求订阅地址
     for url in url_list:
-        print(url)
+        # 这里拿到的是一串乱码，需要进行解码
         response = requests.get(url, headers=headers, timeout=9000).text
         try:
             raw = base64.b64decode(response)
+        # 有可能直接拿到了没加密的yaml文件
         except Exception as r:
-            log('base64解码失败:{},应当为clash节点'.format(r))
-            log('clash节点提取中...')
+            log('base64解码失败:{}'.format(r))
+            log('代理节点提取中...')
             yml = yaml.load(response, Loader=yaml.FullLoader)
             nodes_list = []
             tmp_list = []
@@ -244,7 +254,7 @@ def get_proxies(urls):
             elif yml.get('Proxy'):
                 tmp_list = yml.get('Proxy')
             else:
-                log('clash节点提取失败,clash节点为空')
+                log('代理节点提取失败')
                 continue
             for node in tmp_list:
                 node['name'] = node['name'].strip() if node.get('name') else None
@@ -257,11 +267,13 @@ def get_proxies(urls):
                     del node['obfsparam']
                 node['udp'] = True
                 nodes_list.append(node)
+
             node_names = [node.get('name') for node in nodes_list]
-            log('可用clash节点{}个'.format(len(node_names)))
+
             proxy_list['proxy_list'].extend(nodes_list)
             proxy_list['proxy_names'].extend(node_names)
             continue
+
         nodes_list = raw.splitlines()
         v2ray_urls = []
         ss_urls = []
@@ -287,8 +299,11 @@ def get_proxies(urls):
             clash_node = ssr_to_clash(decode_proxy)
         proxy_list['proxy_list'].extend(clash_node['proxy_list'])
         proxy_list['proxy_names'].extend(clash_node['proxy_names'])
-    log('共发现:{}个节点'.format(len(proxy_list['proxy_names'])))
     return proxy_list
+
+
+def parse_clash_node():
+    pass
 
 
 # 获取本地规则策略的配置文件
@@ -346,11 +361,10 @@ if __name__ == '__main__':
     if sub_url is None or sub_url == '':
         sys.exit()
     node_list = get_proxies(sub_url)
-    
-    
+
     # 输出路径
     output_path = './output.yaml'
-    
+
     # 规则策略
     # 网上的
     config_url = 'https://cdn.jsdelivr.net/gh/celetor/convert2clash@main/config.yaml'
@@ -359,9 +373,8 @@ if __name__ == '__main__':
 
     # 网上下载不到，就用本地的
     default_config = get_default_config(config_url, config_path)
-    
-    
+
     final_config = add_proxies_to_model(node_list, default_config)
-    
+
     save_config(output_path, final_config)
     print(f'文件已导出至 {config_path}')
