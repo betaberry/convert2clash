@@ -4,3 +4,4 @@ dist/
 *.spec
 venv
 output.yaml
+sub_url.txt
