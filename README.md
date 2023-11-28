@@ -4,9 +4,11 @@
 
 
 ## 原理
-本地有一个config.yaml的文件，这个是一个规则表。
-还需要机场代理的ip地址，这个需要你提供订阅地址来进行下载。
-规则表+代理ip=最终的config.yaml
+核心在于clash的配置文件config.yaml。
+其中有2个的重要的配置：proxy和rule
+proxy就是机场代理的ip地址，这个需要你提供订阅地址来得到。
+rule就是哪些网站要用代理，哪些网站不用。
+proxy + rule = 最终的config.yaml
 
 
 ## Robot.py中的参数 :
@@ -19,7 +21,7 @@
 ### 当config_url获取失败，使用config_path的策略。正常情况下只需修改sub_url即可食用。
 
 
-## 使用说明①:
+## 使用说明:
  1. 执行pip install -r requirements.txt
  2. 创建一个文件sub_url.txt，把你的订阅地址放在里面（多个地址;隔开）
  3. 执行python Robot.py
