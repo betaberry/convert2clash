@@ -1,7 +1,6 @@
 # convert2clash
-
-## 说明 : 本项目提供解析ss/ssr/v2ray/clashR/clash订阅链接为Clash配置文件的自动化脚本,供学习交流使用.
-
+本项目fork自https://github.com/celetor/convert2clash，也是用作学习交流
+基本没上啥改动，主要修改了rule.yaml(原来叫config.yaml)，加了一个自动选最快的proxy-group，并删掉了冗余的部分。
 
 ## 原理
 核心在于clash的配置文件config.yaml。

@@ -5,3 +5,4 @@ dist/
 venv
 config.yaml
 sub_url.txt
+base64.txt
