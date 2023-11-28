@@ -21,5 +21,5 @@
 
 ## 使用说明①:
  1. 执行pip install -r requirements.txt
- 2. 创建一个文件sub_url.txt，把你的订阅地址放在里面
+ 2. 创建一个文件sub_url.txt，把你的订阅地址放在里面（多个地址;隔开）
  3. 执行python Robot.py

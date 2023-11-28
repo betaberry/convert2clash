@@ -340,7 +340,9 @@ def save_config(path, data):
 if __name__ == '__main__':
     # 订阅地址 多个地址用;隔开
     # sub_url = input('请输入订阅地址(多个地址用;隔开):')
-    sub_url = ""
+    f = open("sub_url.txt")
+    sub_url = f.readline()
+    print(sub_url)
     if sub_url is None or sub_url == '':
         sys.exit()
     node_list = get_proxies(sub_url)
