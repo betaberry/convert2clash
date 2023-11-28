@@ -67,8 +67,8 @@ proxy-groups:
 # 规则
 rules:
   # custom
-  - DOMAIN,163.com,Proxy
-  - DOMAIN,aliyun.com,Proxy
+  - DOMAIN,163.com,Domestic
+  - DOMAIN,aliyun.com,Domestic
   # (GlobalTV)
   # > ABC
   - DOMAIN-SUFFIX,edgedatg.com,GlobalTV

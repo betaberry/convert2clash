@@ -3,5 +3,5 @@ build/
 dist/
 *.spec
 venv
-output.yaml
+config.yaml
 sub_url.txt
