@@ -163,35 +163,6 @@ rules:
   - DOMAIN-SUFFIX,gvt2.com,Proxy
   - DOMAIN-SUFFIX,youtu.be,Proxy
 
-  # (Proxy)
-  # > Bilibili
-  - DOMAIN-KEYWORD,bilibili,Proxy
-  - DOMAIN-SUFFIX,acg.tv,Proxy
-  - DOMAIN-SUFFIX,acgvideo.com,Proxy
-  - DOMAIN-SUFFIX,b23.tv,Proxy
-  - DOMAIN-SUFFIX,biliapi.com,Proxy
-  - DOMAIN-SUFFIX,biliapi.net,Proxy
-  - DOMAIN-SUFFIX,bilibili.com,Proxy
-  - DOMAIN-SUFFIX,biligame.com,Proxy
-  - DOMAIN-SUFFIX,biligame.net,Proxy
-  - DOMAIN-SUFFIX,hdslb.com,Proxy
-  - DOMAIN-SUFFIX,im9.com,Proxy
-
-  # > IQIYI
-  - DOMAIN-KEYWORD,qiyi,Proxy
-  - DOMAIN-SUFFIX,qy.net,Proxy
-
-  # > letv
-  - DOMAIN-SUFFIX,api.mob.app.letv.com,Proxy
-
-  # > NeteaseMusic
-  - DOMAIN-SUFFIX,163yun.com,Proxy
-  - DOMAIN-SUFFIX,music.126.net,Proxy
-  - DOMAIN-SUFFIX,music.163.com,Proxy
-
-  # > Tencent Video
-  - DOMAIN-SUFFIX,vv.video.qq.com,Proxy
-
   # China Area Network
   # > Microsoft
   - DOMAIN-SUFFIX,microsoft.com,DIRECT
@@ -290,12 +261,6 @@ rules:
   # > Content Delivery Network
   # > Akamai
   - DOMAIN-SUFFIX,akadns.net,DIRECT
-  # - DOMAIN-SUFFIX,akamai.net,DIRECT
-  # - DOMAIN-SUFFIX,akamaiedge.net,DIRECT
-  # - DOMAIN-SUFFIX,akamaihd.net,DIRECT
-  # - DOMAIN-SUFFIX,akamaistream.net,DIRECT
-  # - DOMAIN-SUFFIX,akamaized.net,DIRECT
-  # > ChinaNetCenter
   - DOMAIN-SUFFIX,chinanetcenter.com,DIRECT
   - DOMAIN-SUFFIX,wangsu.com,DIRECT
   # > IP Query
@@ -350,8 +315,6 @@ rules:
   - DOMAIN-SUFFIX,yangkeduo.com,DIRECT
   - DOMAIN-SUFFIX,zhihu.com,DIRECT
   - DOMAIN-SUFFIX,zhimg.com,DIRECT
-  #USER-AGENT,NeteaseMusic*,DIRECT
-  #USER-AGENT,%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90*,DIRECT
 
   # (DNS Cache Pollution Protection)
   # > Google
