@@ -14,12 +14,6 @@ def log(msg):
     print('[' + time.strftime('%Y.%m.%d-%H:%M:%S') + '] ' + msg)
 
 
-# 保存到文件
-def save_to_file(file_name, content):
-    with open(file_name, 'wb') as f:
-        f.write(content)
-
-
 # 针对url的base64解码
 def safe_decode(s):
     num = len(s) % 4
@@ -348,17 +342,21 @@ def add_proxies_to_model(data, model):
 
 
 # 保存配置文件
-def save_config(path, data):
+def save_config(data, path):
     config = yaml.dump(data, sort_keys=False, default_flow_style=False, encoding='utf-8', allow_unicode=True)
-    save_to_file(path, config)
+    save_to_file(config, path)
     log('成功更新{}个节点'.format(len(data['proxies'])))
 
+# 保存到文件
+def save_to_file(content, path):
+    with open(path, 'wb') as f:
+        f.write(content)
 
 # 程序入口
 if __name__ == '__main__':
     # 订阅地址 多个地址用;隔开
     # sub_url = input('请输入订阅地址(多个地址用;隔开):')
-    f = open("sub_url.txt")
+    f = open("./sub_url.txt")
     sub_url = f.readline()
     f.close()
     if sub_url is None or sub_url == '':
@@ -368,7 +366,8 @@ if __name__ == '__main__':
     proxy_node_list = get_proxies(sub_url)
 
     # 最终合并后的配置文件
-    output_path = './config.yaml'
+    output_path_1 = './config.yaml'
+    output_path_2 = '/root/.config/clash/config.yaml'
 
     # 规则策略
     # 网上没有，用本地的
@@ -380,5 +379,7 @@ if __name__ == '__main__':
     # 合并
     final_config = add_proxies_to_model(proxy_node_list, default_config)
 
-    save_config(output_path, final_config)
-    print(f'文件已导出至 {output_path}')
+    save_config( final_config, output_path_1)
+    save_config( final_config, output_path_2)
+    print(f'文件已导出至 {output_path_1}')
+    print(f'文件已导出至 {output_path_2}')
