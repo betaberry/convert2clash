@@ -17,15 +17,10 @@ rule就是哪些网站要用代理，哪些网站不用。
 proxy + rule = 最终的config.yaml
 
 
-## Robot.py中的参数 :
- 1. sub_url=订阅地址（多个地址;隔开）
- 2. output_path=转换成功后文件输出路径 默认输出至当前目录的config.yaml中
- 3. rule_url=来自互联网的规则策略，如果失败，就进入下一步
- 4. rule_path=来自本地的规则策略 默认选择当前目录的rule.yaml文件
-
-
 
 ## 使用说明:
  1. 执行pip install -r requirements.txt
- 2. 创建一个文件sub_url.txt，把你的订阅地址放在里面（多个地址;隔开）
- 3. 执行python Robot.py
+ 2. 创建一个文件`sub_url.txt`，把你的订阅地址放在里面（多个地址;隔开）
+ 3. 在`output_path.txt`文件中把你想要输出的配置文件的路径写好（多个路径请换行）
+ 4. （可选）有时候request可能访问不了订阅地址，所以我们需要在自己电脑上先访问一下订阅地址，把得到的内容放进去，同时需要创建一个文件`base64.txt`，把订阅地址对应的内容放进去。
+ 5. 执行python Robot.py

@@ -314,19 +314,6 @@ def load_local_config(path):
         sys.exit()
 
 
-# 获取规则策略的配置文件
-def get_default_config(url, path):
-    if url is None or url == '':
-        return load_local_config(path)
-    try:
-        raw = requests.get(url, timeout=5000).content.decode('utf-8')
-        template_config = yaml.load(raw, Loader=yaml.FullLoader)
-    except requests.exceptions.RequestException:
-        log('网络获取规则配置失败,加载本地配置文件...')
-        template_config = load_local_config(path)
-    return template_config
-
-
 # 将代理添加到配置文件
 def add_proxies_to_model(data, model):
     if model.get('proxies') is None:
@@ -366,20 +353,19 @@ if __name__ == '__main__':
     proxy_node_list = get_proxies(sub_url)
 
     # 最终合并后的配置文件
-    output_path_1 = './config.yaml'
-    output_path_2 = '/root/.config/clash/config.yaml'
+    with open('./output_path.txt', 'r') as file:
+        lines = file.readlines()
+    output_paths = [line.rstrip('\n') for line in lines]
 
     # 规则策略
-    # 网上没有，用本地的
     rule_path = 'rule.yaml'
 
     # 网上下载不到，就用本地的
-    default_config = get_default_config(None, rule_path)
+    rule_config = load_local_config(rule_path)
 
     # 合并
-    final_config = add_proxies_to_model(proxy_node_list, default_config)
-
-    save_config( final_config, output_path_1)
-    save_config( final_config, output_path_2)
-    print(f'文件已导出至 {output_path_1}')
-    print(f'文件已导出至 {output_path_2}')
+    final_config = add_proxies_to_model(proxy_node_list, rule_config)
+    
+    for p in output_paths:
+        save_config(final_config, p)
+        print(f'文件已导出至 {p}')

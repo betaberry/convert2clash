@@ -1,0 +1,2 @@
+./config.yaml
+/root/.config/clash/config.yaml
